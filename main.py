@@ -8,13 +8,14 @@ from sklearn.metrics import confusion_matrix
 
 def make_Dictionary(train_dir):
     emails = [os.path.join(train_dir, f) for f in os.listdir(train_dir)]
+    # emails = ['test-mails/spam/','test-mails/ham/']
     all_words = []
     for mail in emails:
-        with open(mail) as m:
-            for i, line in enumerate(m):
-                if i == 2:  # Body of email is only 3rd line of text file
-                    words = line.split()
-                    all_words += words
+            with open(mail) as m:
+                for i, line in enumerate(m):
+                    if i == 2:  # Body of email is only 3rd line of text file
+                        words = line.split()
+                        all_words += words
 
     dictionary = Counter(all_words)
     list_to_remove = dictionary.keys()
@@ -49,6 +50,7 @@ def extract_features(mail_dir):
 
 
 train_dir = 'test-mails'
+# print os.listdir(train_dir)
 dictionary = make_Dictionary(train_dir)
 
 
