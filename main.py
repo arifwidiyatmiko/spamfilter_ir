@@ -4,30 +4,30 @@ from collections import Counter
 from sklearn.naive_bayes import MultinomialNB, GaussianNB, BernoulliNB
 from sklearn.svm import SVC, NuSVC, LinearSVC
 from sklearn.metrics import confusion_matrix
+
+
 # Create a dictionary of words with its frequency
 
 def make_Dictionary(train_dir):
     emails = [os.path.join(train_dir, f) for f in os.listdir(train_dir)]
-    # emails = ['test-mails/spam/','test-mails/ham/']
     all_words = []
     for mail in emails:
-            with open(mail) as m:
-                for i, line in enumerate(m):
-                    if i == 2:  # Body of email is only 3rd line of text file
-                        words = line.split()
-                        all_words += words
+        with open(mail) as m:
+            for i, line in enumerate(m):
+                if i == 2:  # Body of email is only 3rd line of text file
+                    words = line.split()
+                    all_words += words
 
     dictionary = Counter(all_words)
-    list_to_remove = dictionary.keys()
+    # Paste code for non-word removal here(code snippet is given below)
+    list_to_remove = list(dictionary)
     for item in list_to_remove:
         if item.isalpha() == False:
             del dictionary[item]
         elif len(item) == 1:
             del dictionary[item]
     dictionary = dictionary.most_common(3000)
-    # Paste code for non-word removal here(code snippet is given below)
     return dictionary
-
 
 
 def extract_features(mail_dir):
@@ -48,12 +48,10 @@ def extract_features(mail_dir):
         docID = docID + 1
     return features_matrix
 
+# Create a dictionary of words with its frequency
 
-train_dir = 'test-mails'
-# print os.listdir(train_dir)
+train_dir = 'ling-spam/train-mails'
 dictionary = make_Dictionary(train_dir)
-
-
 
 # Prepare feature vectors per training mail and its labels
 
@@ -69,12 +67,12 @@ model1.fit(train_matrix,train_labels)
 model2.fit(train_matrix,train_labels)
 
 # Test the unseen mails for Spam
-test_dir = 'test-mails'
+test_dir = 'ling-spam/test-mails'
 test_matrix = extract_features(test_dir)
 test_labels = np.zeros(260)
 test_labels[130:260] = 1
 result1 = model1.predict(test_matrix)
 result2 = model2.predict(test_matrix)
-print confusion_matrix(test_labels,result1)
-print confusion_matrix(test_labels,result2)
+print(confusion_matrix(test_labels,result1))
+print(confusion_matrix(test_labels,result2))
 
